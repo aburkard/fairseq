@@ -19,7 +19,7 @@ class SequenceGenerator(object):
         normalize_scores=True, len_penalty=1., unk_penalty=0., retain_dropout=False,
         sampling=False, sampling_topk=-1, sampling_temperature=1.,
         diverse_beam_groups=-1, diverse_beam_strength=0.5,
-        match_source_len=False, no_repeat_ngram_size=0
+        match_source_len=False, no_repeat_ngram_size=0, sampling_topp=-1
     ):
         """Generates translations of a given source sentence.
 
@@ -69,9 +69,10 @@ class SequenceGenerator(object):
         self.no_repeat_ngram_size = no_repeat_ngram_size
 
         assert sampling_topk < 0 or sampling, '--sampling-topk requires --sampling'
+        assert sampling_topp < 0 or sampling, '--sampling-topp requires --sampling'
 
         if sampling:
-            self.search = search.Sampling(tgt_dict, sampling_topk, sampling_temperature)
+            self.search = search.Sampling(tgt_dict, sampling_topk, sampling_temperature, sampling_topp)
         elif diverse_beam_groups > 0:
             self.search = search.DiverseBeamSearch(tgt_dict, diverse_beam_groups, diverse_beam_strength)
         elif match_source_len:
